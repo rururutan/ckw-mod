@@ -733,12 +733,17 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT msg, WPARAM wp, LPARAM lp)
 		}
 		PostMessage(gConWnd, msg, wp, convert_position(lp));
 		break;
+	case WM_MBUTTONUP:
 	case WM_MBUTTONDOWN:
-	case WM_RBUTTONDOWN:
+		PostMessage(gConWnd, msg, wp, convert_position(lp));
+		break;
+	case WM_RBUTTONUP:
+	//case WM_RBUTTONDOWN:
 		onPasteFromClipboard(hWnd);
 		PostMessage(gConWnd, msg, wp, convert_position(lp));
 		break;
-	case WM_DROPFILES:
+
+	  case WM_DROPFILES:
 		onDropFile((HDROP)wp);
 		break;
 

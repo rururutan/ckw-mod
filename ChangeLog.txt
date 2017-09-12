@@ -1,3 +1,6 @@
+2017-xx-xx rururu
+    * 左クリックのペーストをマウスキーアップに変更。
+
 2017-09-09 rururu
     Version 0.9.1-mod-r5
     * ckw.cfgのデフォルトをWindows10の新カラースキームに差し替え
