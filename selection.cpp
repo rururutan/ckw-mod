@@ -295,7 +295,7 @@ wchar_t * selectionGetString()
 		nb += gSelectRect.Right - gCSI->srWindow.Left;
 	}
 
-	COORD      size = { CSI_WndCols(gCSI), 1 };
+	COORD      size = { static_cast<SHORT>(CSI_WndCols(gCSI)), 1 };
 	CHAR_INFO* work = new CHAR_INFO[ size.X ];
 	wchar_t*   buffer = new wchar_t[ nb +32 ];
 	wchar_t*   wp = buffer;
@@ -339,10 +339,11 @@ wchar_t * selectionGetString()
 void	onLBtnDown(HWND hWnd, int x, int y)
 {
 	static DWORD	prev_time = 0;
-	static int	prevX = -100;
-	static int	prevY = -100;
 
 	{
+		static int	prevX = -100;
+		static int	prevY = -100;
+
 		/* calc click count */
 		DWORD now_time = GetTickCount();
 		DWORD stime;

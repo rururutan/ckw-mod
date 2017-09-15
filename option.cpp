@@ -933,16 +933,30 @@ void	ckOpt::geometry(const wchar_t *str)
 
 /*****************************************************************************/
 
-ckOpt::ckOpt()
+ckOpt::ckOpt() :
+	m_isWinPos(false),
+	m_winPosX(0),
+	m_winPosY(0),
+	m_winCharW(80),
+	m_winCharH(24),
+	m_isIconic(false),
+	m_font(L"MS Gothic"),
+	m_fontSize(14),
+	m_alwaysTray(false),
+	m_minimizeToTray(false),
+	m_scrollHide(false),
+	m_scrollRight(true),
+	m_saveLines(500),
+	m_borderSize(1),
+	m_lineSpace(0),
+	m_transp(255),
+	m_isTranspColor(false),
+	m_transpColor(0),
+	m_isTopMost(false),
+	m_bgBmpPos(0),
+	m_isCurBlink(false),
+	m_isNoAutoClose(false)
 {
-	m_isWinPos = false;
-	m_winPosX = 0;
-	m_winPosY = 0;
-	m_winCharW = 80;
-	m_winCharH = 24;
-	m_isIconic = false;
-	m_fontSize = 14;
-	m_font= L"MS Gothic";
 	m_colors[0]  = RGB(0x0c, 0x0c, 0x0c);
 	m_colors[1]  = RGB(0x00, 0x37, 0xda);
 	m_colors[2]  = RGB(0x13, 0xa1, 0x0e);
@@ -963,22 +977,8 @@ ckOpt::ckOpt()
 	m_colorBg    = RGB(0x00, 0x00, 0x01); // cursor bg
 	m_colorCursor = RGB(0xC0, 0xC0, 0x80);
 	m_colorCursorIme = RGB(0xC0, 0x00, 0x00);
-	m_alwaysTray = false;
-	m_minimizeToTray = false;
-	m_scrollHide = false;
-	m_scrollRight = true;
-	m_saveLines = 500;
-	m_borderSize = 1;
-	m_lineSpace = 0;
-	m_transp = 255;
-	m_isTranspColor = false;
-	m_transpColor = 0;
-	m_isTopMost = false;
 	m_config_file[0] = L'\0';
-	m_bgBmpPos = 0;
-	m_isCurBlink = false;
 	m_codePage = GetConsoleCP();
-	m_isNoAutoClose = false;
 }
 
 ckOpt::~ckOpt()
@@ -1050,7 +1050,7 @@ int	ckOpt::setOption(const wchar_t *name, const wchar_t *value, bool rsrc)
 
 
 	unsigned int i;
-	if(swscanf_s(name, L"color%u", &i)==1 && 0<=i && i<=15) {
+	if(swscanf_s(name, L"color%u", &i)==1 && i<=15) {
 		if(!value) return(0);
 		lookupColor(value, m_colors[i]);
 		return(2);

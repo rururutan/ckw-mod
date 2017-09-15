@@ -534,7 +534,7 @@ void	onTimer(HWND hWnd)
 	UINT codepage = GetConsoleCP();
 	if (gCodePage != codepage) {
 		gCodePage = codepage;
-		CONSOLE_FONT_INFOEX info = {0};
+		CONSOLE_FONT_INFOEX info = {};
 		info.cbSize       = sizeof(info);
 		info.FontWeight   = FW_NORMAL;
 		info.dwFontSize.X = 3;
@@ -845,7 +845,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT msg, WPARAM wp, LPARAM lp)
 		case WM_RBUTTONUP:
 			POINT curpos;
 			GetCursorPos(&curpos);
-			SendMessage(hWnd, 0x313, 0, curpos.x | (curpos.y << 16));
+			SendMessage(hWnd, 0x313, 0, MAKELPARAM(curpos.x, curpos.y));
 			break;
 		}
 		break;
@@ -1235,7 +1235,7 @@ static BOOL create_console(ckOpt& opt)
 	
 	// 最大化不具合の解消の為フォントを最小化
 	// レイアウト崩れ/CP65001での日本語出力対策でMS GOTHICを指定
-	CONSOLE_FONT_INFOEX info = {0};
+	CONSOLE_FONT_INFOEX info = {};
 	info.cbSize       = sizeof(info);
 	info.FontWeight   = FW_NORMAL;
 	info.dwFontSize.X = 3;

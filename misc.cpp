@@ -78,7 +78,7 @@ void	onPasteFromClipboard(HWND hWnd)
 {
 	bool	result = true;
 	HANDLE	hMem;
-	wchar_t	*ptr;
+	wchar_t	*ptr = nullptr;
 
 	if(! IsClipboardFormatAvailable(CF_UNICODETEXT))
 		return;
@@ -105,7 +105,7 @@ void copyStringToClipboard( HWND hWnd, const wchar_t * str )
 {
 	size_t length = wcslen(str) +1;
 	HANDLE hMem;
-	wchar_t* ptr;
+	wchar_t* ptr = nullptr;
 	bool	result = true;
 
 	hMem = GlobalAlloc(GMEM_MOVEABLE, sizeof(wchar_t) * length);
@@ -147,7 +147,7 @@ wchar_t * getAllString()
 	wchar_t*   buffer = new wchar_t[ nb ];
 	wchar_t*   wp = buffer;
 	COORD      pos = { 0,0 };
-	SMALL_RECT sr = { 0, 0, gCSI->dwSize.X-1, 0 };
+	SMALL_RECT sr = { 0, 0, static_cast<SHORT>(gCSI->dwSize.X-1), 0 };
 
 	*wp = 0;
 
@@ -268,19 +268,19 @@ void	sysmenu_init(HWND hWnd)
 
 	mii.fType = MFT_STRING;
 	mii.wID = IDM_COPYALL;
-	mii.dwTypeData = L"Copy All(&C)";
+	mii.dwTypeData = const_cast<LPTSTR>(L"Copy All(&C)");
 	mii.cch = (UINT) wcslen(mii.dwTypeData);
 	InsertMenuItem(hMenu, SC_CLOSE, FALSE, &mii);
 
 	mii.fType = MFT_STRING;
 	mii.wID = IDM_NEW;
-	mii.dwTypeData = L"New (&N)";
+	mii.dwTypeData = const_cast<LPTSTR>(L"New (&N)");
 	mii.cch = (UINT) wcslen(mii.dwTypeData);
 	InsertMenuItem(hMenu, SC_CLOSE, FALSE, &mii);
 
 	mii.fType = MFT_STRING;
 	mii.wID = IDM_TOTRAY;
-	mii.dwTypeData = L"To Tray(&O)";
+	mii.dwTypeData = const_cast<LPTSTR>(L"To Tray(&O)");
 	mii.cch = (UINT) wcslen(mii.dwTypeData);
 	InsertMenuItem(hMenu, SC_CLOSE, FALSE, &mii);
 
@@ -296,7 +296,7 @@ void	sysmenu_init(HWND hWnd)
 
 	mii.fType = MFT_STRING;
 	mii.wID = IDM_ABOUT;
-	mii.dwTypeData = L"About (&A)";
+	mii.dwTypeData = const_cast<LPTSTR>(L"About (&A)");
 	mii.cch = (UINT) wcslen(mii.dwTypeData);
 	InsertMenuItem(hMenu, SC_CLOSE, FALSE, &mii);
 
@@ -325,7 +325,7 @@ void	sysmenu_init_topmost(HWND hWnd, HMENU hMenu)
 
 	mii.fType = MFT_STRING;
 	mii.wID = IDM_TOPMOST;
-	mii.dwTypeData = L"TopMost (&T)";
+	mii.dwTypeData = const_cast<LPTSTR>(L"TopMost (&T)");
 	mii.cch = (UINT) wcslen(mii.dwTypeData);
 
 	InsertMenuItem(hMenu, SC_CLOSE, FALSE, &mii);
@@ -369,7 +369,7 @@ void	sysmenu_init_subconfig(HWND hWnd, HMENU hMenu)
 	mii.fType = MFT_STRING;
 	mii.wID = IDM_CONFIG_SELECT;
 	mii.hSubMenu = hSubMenu;
-	mii.dwTypeData = L"Config (&O)";
+	mii.dwTypeData = const_cast<LPTSTR>(L"Config (&O)");
 	mii.cch = (UINT) wcslen(mii.dwTypeData);
 	InsertMenuItem(hMenu, SC_CLOSE, FALSE, &mii);
 }
