@@ -994,9 +994,9 @@ static BOOL create_window(ckOpt& opt)
 		SendMessage(hWnd, WM_SYSCOMMAND, SC_MINIMIZE, 0);
 
 	if(0 < opt.getTransp() && opt.getTransp() < 255)
-		SetLayeredWindowAttributes(hWnd, 0, opt.getTransp(), LWA_ALPHA);
+		SetLayeredWindowAttributes(hWnd, 0, static_cast<BYTE>(opt.getTransp()), LWA_ALPHA);
 	else if(opt.isTranspColor())
-		SetLayeredWindowAttributes(hWnd, opt.getTranspColor(), 255, LWA_COLORKEY);
+		SetLayeredWindowAttributes(hWnd, opt.getTranspColor(), 255u, LWA_COLORKEY);
 
 	ShowWindow(hWnd, SW_SHOW);
 	return(TRUE);
