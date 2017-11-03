@@ -78,7 +78,6 @@ void	onPasteFromClipboard(HWND hWnd)
 {
 	bool	result = true;
 	HANDLE	hMem;
-	wchar_t	*ptr = nullptr;
 
 	if(! IsClipboardFormatAvailable(CF_UNICODETEXT))
 		return;
@@ -90,7 +89,8 @@ void	onPasteFromClipboard(HWND hWnd)
 	hMem = GetClipboardData(CF_UNICODETEXT);
 	if(!hMem)
 		result = false;
-	if(result && !(ptr = (wchar_t*)GlobalLock(hMem)))
+	wchar_t	*ptr = static_cast<wchar_t*>(GlobalLock(hMem));
+	if(result && (ptr == nullptr))
 		result = false;
 	if(result) {
 		__write_console_input(ptr, (DWORD)wcslen(ptr));
@@ -105,13 +105,13 @@ void copyStringToClipboard( HWND hWnd, const wchar_t * str )
 {
 	size_t length = wcslen(str) +1;
 	HANDLE hMem;
-	wchar_t* ptr = nullptr;
 	bool	result = true;
 
 	hMem = GlobalAlloc(GMEM_MOVEABLE, sizeof(wchar_t) * length);
 	if(!hMem) result = false;
 
-	if(result && !(ptr = (wchar_t*) GlobalLock(hMem))) {
+	wchar_t* ptr = static_cast<wchar_t*>(GlobalLock(hMem));
+	if(result && (ptr == nullptr)) {
 		result = false;
 	}
 	if(result) {
