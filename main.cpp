@@ -64,6 +64,7 @@ DWORD	gCurBlinkNext = 0;
 BOOL	gCurHide = FALSE;
 bool	gFocus = false;
 bool	gNoAutoClose = false;
+bool	gMouseEvent = false;
 
 /* screen buffer - copy */
 CONSOLE_SCREEN_BUFFER_INFO* gCSI = nullptr;
@@ -708,11 +709,15 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT msg, WPARAM wp, LPARAM lp)
 		return( DefWindowProc(hWnd, msg, wp, lp) );
 	case WM_LBUTTONDOWN:
 		onLBtnDown(hWnd, (short)LOWORD(lp), (short)HIWORD(lp));
-		PostMessage(gConWnd, msg, wp, convert_position(lp));
+		if (gMouseEvent == true) {
+			PostMessage(gConWnd, msg, wp, convert_position(lp));
+		}
 		break;
 	case WM_LBUTTONUP:
 		onLBtnUp(hWnd, (short)LOWORD(lp), (short)HIWORD(lp));
-		PostMessage(gConWnd, msg, wp, convert_position(lp));
+		if (gMouseEvent == true) {
+			PostMessage(gConWnd, msg, wp, convert_position(lp));
+		}
 		break;
 	case WM_MOUSEMOVE:
 		onMouseMove(hWnd, (short)LOWORD(lp),(short)HIWORD(lp));
@@ -731,19 +736,22 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT msg, WPARAM wp, LPARAM lp)
 				PostMessage(gConWnd, WM_MOUSEWHEEL, -WHEEL_DELTA<<16, MAKELPARAM(x,y));
 			}
 		}
-		PostMessage(gConWnd, msg, wp, convert_position(lp));
+		if (gMouseEvent == true) {
+			PostMessage(gConWnd, msg, wp, convert_position(lp));
+		}
 		break;
 	case WM_MBUTTONUP:
 	case WM_MBUTTONDOWN:
-		PostMessage(gConWnd, msg, wp, convert_position(lp));
+		if (gMouseEvent == true) {
+			PostMessage(gConWnd, msg, wp, convert_position(lp));
+		}
 		break;
 	case WM_RBUTTONUP:
 	//case WM_RBUTTONDOWN:
 		onPasteFromClipboard(hWnd);
-		PostMessage(gConWnd, msg, wp, convert_position(lp));
 		break;
 
-	  case WM_DROPFILES:
+	case WM_DROPFILES:
 		onDropFile((HDROP)wp);
 		break;
 
@@ -853,12 +861,16 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT msg, WPARAM wp, LPARAM lp)
 		gFocus = true;
 		if(gCurBlink) gCurBlinkNext = GetTickCount() + (gCurHide? 0: GetCaretBlinkTime());
 		InvalidateRect(hWnd, nullptr, TRUE);
-		PostMessage(gConWnd, msg, wp, lp);
+		if (gMouseEvent == true) {
+			PostMessage(gConWnd, msg, wp, lp);
+		}
 		break;
 	case WM_KILLFOCUS:
 		gFocus = false;
 		InvalidateRect(hWnd, nullptr, TRUE);
-		PostMessage(gConWnd, msg, wp, lp);
+		if (gMouseEvent == true) {
+			PostMessage(gConWnd, msg, wp, lp);
+		}
 		break;
 	case WM_SIZE:
 		if(gMinimizeToTray && wp == SIZE_MINIMIZED) {
@@ -1225,14 +1237,16 @@ static BOOL create_console(ckOpt& opt)
 		gCodePage = GetConsoleCP();
 	}
 
-	// 簡易編集モードが有効ではマウスイベントが発生しない為OFFにする
-	DWORD flag = 0;
-	if (GetConsoleMode(gStdIn, &flag) == TRUE) {
-		flag &= ~ENABLE_QUICK_EDIT_MODE;
-		SetConsoleMode(gStdIn, flag);
+	gMouseEvent = opt.isMouseEvent();
+	if (gMouseEvent == true) {
+		// マウスイベント有効時には簡易編集モードをOFFにする
+		DWORD flag = 0;
+		if (GetConsoleMode(gStdIn, &flag) == TRUE) {
+			flag &= ~ENABLE_QUICK_EDIT_MODE;
+			SetConsoleMode(gStdIn, flag);
+		}
 	}
 
-	
 	// 最大化不具合の解消の為フォントを最小化
 	// レイアウト崩れ/CP65001での日本語出力対策でMS GOTHICを指定
 	CONSOLE_FONT_INFOEX info = {};

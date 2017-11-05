@@ -955,7 +955,8 @@ ckOpt::ckOpt() :
 	m_isTopMost(false),
 	m_bgBmpPos(0),
 	m_isCurBlink(false),
-	m_isNoAutoClose(false)
+	m_isNoAutoClose(false),
+	m_isMouseEvent(false)
 {
 	m_colors[0]  = RGB(0x0c, 0x0c, 0x0c);
 	m_colors[1]  = RGB(0x00, 0x37, 0xda);
@@ -1047,6 +1048,7 @@ int	ckOpt::setOption(const wchar_t *name, const wchar_t *value, bool rsrc)
 	CHK_BOOL(L"cursorBlink",		L"crb",		m_isCurBlink);
 	CHK_MISC(L"codePage",	L"cp",		m_codePage = _wtoi(value));
 	CHK_BOOL(L"noAutoClose",	L"nac",		m_isNoAutoClose);
+	CHK_BOOL(L"mouseEvent",	L"me",		m_isMouseEvent);
 
 
 	unsigned int i;
@@ -1104,6 +1106,8 @@ static void usage(bool isLong)
 	L"backgroundBitmapPos",	L"bitmappos",	L"number",	L"background bmp position. ( 0:tile 1:left-top 2:right-top 3:left-bottom 4:right-bottom 5:stretch-h 6:stretch-v 7:stretch-fill )",
 	L"cursorBlink",		L"crb",		L"boolean",	L"cursor blink",
 	L"codePage",		L"cp",		L"number",	L"code page",
+	L"noautoclose",		L"nac",		L"boolean",	L"disable auto close",
+	L"mouseEvent",		L"me",		L"boolean",	L"enable mouse event",
 	};
 	unsigned int	i;
 

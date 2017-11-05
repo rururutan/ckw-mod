@@ -45,6 +45,7 @@ public:
 	bool		isCurBlink() const		{ return(m_isCurBlink); }
 	int		getCodePage() const		{ return(m_codePage); }
 	bool		isNoAutoClose() const	{ return(m_isNoAutoClose); }
+	bool		isMouseEvent() const	{ return(m_isMouseEvent); }
 
 	const wchar_t*	getCmd() const
 	{
@@ -114,6 +115,7 @@ private:
 	bool		m_isCurBlink;
 	int		m_codePage;
 	bool	m_isNoAutoClose;
+	bool	m_isMouseEvent;
 };
 
 #endif /* CKW_OPT_H */
