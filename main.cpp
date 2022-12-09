@@ -24,6 +24,10 @@
 #include "winmng.h"
 #include <string>
 #include <imm.h>
+#include <dwmapi.h>
+#ifndef DWMWA_USE_IMMERSIVE_DARK_MODE
+#define DWMWA_USE_IMMERSIVE_DARK_MODE 20
+#endif
 
 /*****************************************************************************/
 
@@ -88,6 +92,7 @@ enum {
 COLORREF gColorTable[ kColorMax ];
 
 static BOOL create_font(const wchar_t* name, int height);
+static BOOL checkDarkMode();
 
 /*****************************************************************************/
 
@@ -995,6 +1000,9 @@ static BOOL create_window(ckOpt& opt)
 		return(FALSE);
 	}
 
+	BOOL value = checkDarkMode();
+	DwmSetWindowAttribute(hWnd, DWMWA_USE_IMMERSIVE_DARK_MODE, &value, sizeof(value));
+
 	gWinMng.register_window(hWnd);
 	sysmenu_init(hWnd);
 	sysicon_init(hWnd, iconsm, gTitle, opt.isAlwaysTray());
@@ -1440,6 +1448,22 @@ void makeNewWindow()
 		CloseHandle(pi.hProcess);
 		CloseHandle(pi.hThread);
 	}
+}
+
+static BOOL checkDarkMode()
+{
+	HKEY hKey = nullptr;
+	RegOpenKeyEx(HKEY_CURRENT_USER
+		, L"Software\\Microsoft\\Windows\\CurrentVersion\\Themes\\Personalize"
+		, 0
+		, KEY_QUERY_VALUE
+		, &hKey);
+	DWORD dwType = 0;
+	DWORD lightMode = 1;
+	DWORD dwReadSize = sizeof(DWORD);
+	RegQueryValueEx(hKey, L"AppsUseLightTheme", 0, &dwType, reinterpret_cast<LPBYTE>(& lightMode), &dwReadSize);
+	RegCloseKey(hKey);
+	return lightMode == 0;
 }
 
 /* EOF */
