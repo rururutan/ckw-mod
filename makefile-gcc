@@ -11,13 +11,13 @@ CXXFLAGS = -O2 $(INCLUDE) \
            -fomit-frame-pointer \
            -std=c++11
 LDFLAGS = -mwindows -Wl,--enable-stdcall-fixup -static -s
-LDLIBS = -lshlwapi -limm32
+LDLIBS = -lshlwapi -limm32 -lDwmapi -lUxTheme
 RFLAGS = -J rc -O coff
 
 ifdef DEBUG
 CXXFLAGS = -g -Wall -Wextra $(INCLUDE)
 LDFLAGS = -mwindows -Wl,--enable-stdcall-fixup -static
-LDLIBS = -lshlwapi -limm32
+LDLIBS = -lshlwapi -limm32 -lDwmapi -lUxTheme
 endif
 
 SRCS = main.cpp \

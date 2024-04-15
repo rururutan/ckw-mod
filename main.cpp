@@ -890,6 +890,18 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT msg, WPARAM wp, LPARAM lp)
 			SetConsoleScreenBufferSize(gStdOut, size);
 		}
 		return(0);
+	case WM_SETTINGCHANGE:
+		{
+			BOOL value = checkDarkMode();
+			DwmSetWindowAttribute(hWnd, DWMWA_USE_IMMERSIVE_DARK_MODE, &value, sizeof(value));
+			if (value == TRUE) {
+				SetWindowTheme(hWnd, L"DarkMode_Explorer", nullptr);
+			}
+			else {
+				SetWindowTheme(hWnd, L"Explorer", nullptr);
+			}
+		}
+		break;
 	default:
 		return( DefWindowProc(hWnd, msg, wp, lp) );
 	}
@@ -1001,7 +1013,10 @@ static BOOL create_window(ckOpt& opt)
 	}
 
 	BOOL value = checkDarkMode();
-	DwmSetWindowAttribute(hWnd, DWMWA_USE_IMMERSIVE_DARK_MODE, &value, sizeof(value));
+	if (value == TRUE) {
+		DwmSetWindowAttribute(hWnd, DWMWA_USE_IMMERSIVE_DARK_MODE, &value, sizeof(value));
+		SetWindowTheme(hWnd, L"DarkMode_Explorer", nullptr);
+	}
 
 	gWinMng.register_window(hWnd);
 	sysmenu_init(hWnd);
