@@ -1,5 +1,6 @@
-2022-12-10 rururu
-    * Win10 dark mode仮対応
+2024-04-15 rururu
+    Version 0.9.1-mod-r6
+    * Win10 dark mode対応
     * マウスイベント有効/無効オプションを追加
         * --mouseEvent / -me
     * 左クリックのペーストをマウスキーアップに変更。
