@@ -1202,6 +1202,10 @@ static void __hide_alloc_console()
 			Sleep(10);
 		}
 	}
+	else {
+		if (IsWindowVisible(gConWnd))
+			ShowWindow(gConWnd, SW_HIDE);
+	}
 }
 
 static void _terminate();
